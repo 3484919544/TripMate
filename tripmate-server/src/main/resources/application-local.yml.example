@@ -1,0 +1,30 @@
+# 本地配置示例(复制为 application-local.yml 后填写真实值,该文件已被 .gitignore 忽略)
+# 密钥绝不提交到代码仓库
+spring:
+  datasource:
+    # 数据库账号(填写你自己的数据库账号)
+    username: 你的数据库账号
+    # 数据库密码(填写你自己的数据库密码)
+    password: 你的数据库密码
+    # 可选:数据库地址与库名(默认 localhost:3306/TripMate,按需覆盖)
+    # url: jdbc:mysql://localhost:3306/TripMate?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true
+
+ai:
+  # 大模型 API Key(向你选用的服务商申请,需兼容 OpenAI 协议)
+  #api-key: 你的APIKey
+  # 模型服务基址(填写你所用服务商的接口基址,不含 /chat/completions)
+  #base-url: 你的模型服务商基址
+  # 模型名(填写你所用服务商的模型名称)
+  #model: 你的模型名
+  # 若所用服务商不支持 response_format(json_object),请改为 false
+  #json-mode: false
+
+# JWT 签名密钥(生产必填;留空则每次启动随机生成,重启后已签发 token 失效)
+# jwt:
+#   secret: 请填写足够长的随机字符串(建议 32 字节以上)
+
+# 初始化管理员(仅在系统无管理员时创建;不填则不创建,避免内置默认口令)
+# app:
+#   admin:
+#     username: admin
+#     password: 请设置一个强密码

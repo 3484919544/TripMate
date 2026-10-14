@@ -1,0 +1,63 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: tripmate-server
+  datasource:
+    url: jdbc:mysql://localhost:3306/TripMate?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    # 后端返回 camelCase,前端契约一致
+    property-naming-strategy: LOWER_CAMEL_CASE
+    default-property-inclusion: non_null
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.tripmate.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: null
+
+# AI 大模型配置(需自行填写,兼容 OpenAI 协议;配置方法与示例见 application-local.yml.example 及文档)
+ai:
+  api-key: ${AI_API_KEY:}
+  # 模型服务基址(不含 /chat/completions,需自行填写你的服务商地址)
+  base-url: ${AI_BASE_URL:}
+  # 模型名(需自行填写)
+  model: ${AI_MODEL:}
+  # 接口路径(OpenAI 兼容协议固定为 /chat/completions)
+  endpoint: /chat/completions
+  timeout: 30000
+  retry: 1
+  temperature: 0.7
+  # 是否强制 JSON 输出;若服务商不支持 response_format 则设为 false
+  json-mode: true
+
+# JWT(secret 留空则启动时生成随机密钥,重启后已签发 token 失效;生产请配置 JWT_SECRET)
+jwt:
+  secret: ${JWT_SECRET:}
+  # 过期毫秒:24 小时
+  expire: 86400000
+
+# 初始化管理员:仅当系统内不存在管理员时创建;password 留空则不自动创建(避免内置默认口令)
+app:
+  admin:
+    username: ${APP_ADMIN_USERNAME:admin}
+    password: ${APP_ADMIN_PASSWORD:}
+
+logging:
+  level:
+    com.tripmate: debug
+    com.tripmate.ai: info
