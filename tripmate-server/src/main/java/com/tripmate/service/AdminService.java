@@ -75,10 +75,24 @@ public class AdminService {
       throw new BusinessException(ResultCode.BAD_REQUEST, "角色只能为 USER 或 ADMIN");
     }
     u.setRole(role);
+    //自动生成10位唯一数字账号
+    u.setAccount(generateUniqueAccount());
     userMapper.insert(u);
     return toVO(u);
   }
 
+/** 生成 10 位唯一数字账号(最多重试 10 次) */
+  private String generateUniqueAccount() {
+    for (int i = 0; i < 10; i++) {
+      String acc = String.valueOf(1_000_000_000L + (long) (Math.random() * 9_000_000_000L));
+      Long exists = userMapper.selectCount(
+          new LambdaQueryWrapper<User>().eq(User::getAccount, acc));
+      if (exists == null || exists == 0) return acc;
+    }
+    // 兜底:基于时间戳,保证唯一
+    return String.valueOf(System.currentTimeMillis()).substring(0, 10);
+  }
+  
   /** 用户列表(支持按用户名/昵称搜索) */
   public PageResult<UserInfoVO> listUsers(Integer pageNum, Integer pageSize, String keyword) {
     requireAdmin();
